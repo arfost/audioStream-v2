@@ -1,0 +1,43 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+
+<dom-module id="audio-player">
+    <template>
+        <style>
+            paper-icon-button {
+                color: black;
+                z-index: 200;
+                background-color: blue;
+            }
+        </style>
+        <!-- Audio HTML5 element -->
+        <audio id="audio" src="{{ src }}"></audio>
+        <paper-icon-button icon="av:play-arrow" on-tap="_playPause"></paper-icon-button>
+    </template>
+    <script>
+        /**
+               * @customElement
+               * @polymer
+               */
+        class AudioPlayer extends Polymer.Element {
+            static get is() { return 'audio-player'; }
+            static get properties() {
+                return {
+                    src: {
+                        type: String,
+                        value: 'about:blank'
+                    }
+                };
+            }
+
+            _playPause() {
+                console.log('play pause called')
+                var a = this.$.audio.paused ? this.$.audio.play() : this.$.audio.pause();
+                console.log('statut : ', a)
+            }
+        }
+        window.customElements.define(AudioPlayer.is, AudioPlayer);
+    </script>
+</dom-module>

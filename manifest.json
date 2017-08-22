@@ -1,0 +1,7 @@
+{
+  "name": "audiostream",
+  "short_name": "audiostream",
+  "description": "stream some audio",
+  "start_url": "/",
+  "display": "standalone"
+}
