@@ -9,12 +9,11 @@
             paper-icon-button {
                 color: black;
                 z-index: 200;
-                background-color: blue;
             }
         </style>
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}"></audio>
-        <paper-icon-button icon="av:play-arrow" on-tap="_playPause"></paper-icon-button>
+        <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
+        <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button>
     </template>
     <script>
         /**
@@ -28,14 +27,31 @@
                     src: {
                         type: String,
                         value: 'about:blank'
+                    },
+                    statusIcon:{
+                        type: String,
+                        value: 'av:play-arrow'
                     }
                 };
             }
-
             _playPause() {
                 console.log('play pause called')
-                var a = this.$.audio.paused ? this.$.audio.play() : this.$.audio.pause();
-                console.log('statut : ', a)
+                this.$.audio.paused ? this.$.audio.play() : this.$.audio.pause();
+                console.log('statut')
+            }
+            _audioPlaying(){
+                console.log("Audio play event fired", arguments)
+                this.statusIcon = 'av:pause';
+            }
+            _audioPause(){
+                console.log("Audio pause event fired", arguments)
+                this.statusIcon = 'av:play-arrow';
+            }
+            _audioEnded(){
+                console.log("Audio endend event fired", arguments)
+            }
+            _audioError(){
+                console.log("Audio play event fired", arguments)
             }
         }
         window.customElements.define(AudioPlayer.is, AudioPlayer);
