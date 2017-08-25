@@ -11,9 +11,40 @@
                 z-index: 200;
             }
         </style>
+
+        <div id="PlayerBar">
+            <!-- Repeat Track -->
+            <span>
+                <paper-icon-button icon="av:repeat-one" on-tap="_repeatThisTrack"></paper-icon-button>
+            </span>
+            <!-- Repeat List -->
+            <span>
+                <paper-icon-button icon="av:replay" on-tap="_repeatPlayList"></paper-icon-button>
+            </span>
+            <!-- display slot -->
+            <span >
+                {{ trackName }} {{ timePlayed }}
+            </span>
+            <!-- previous track -->
+            <span>
+                <paper-icon-button icon="av:skip-previous" on-tap="_prevTrack"></paper-icon-button>
+            </span>
+            <!-- Play/Pause -->
+            <span>
+                <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button>
+            </span>
+            <!-- Stop Track -->
+            <span>
+                <paper-icon-button icon="av:stop" on-tap="_stopTrack"></paper-icon-button>
+            </span>
+            <!-- Next Track -->
+            <span>
+                <paper-icon-button icon="av:skip-next" on-tap="_nextTrack"></paper-icon-button>
+            </span>
+        </div>
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
-        <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button>
+        <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError" curren-time="{{ timePlayed }}"></audio>
+        <!-- <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button> -->
     </template>
     <script>
         /**
@@ -31,17 +62,51 @@
                     statusIcon:{
                         type: String,
                         value: 'av:play-arrow'
+                    },
+                    trackName:{
+                        type: String,
+                        value: 'MUSIIIIIIIIC'
+                    },
+                    timePlayed:{
+                        type: String,
+                        value: '00:00'
                     }
                 };
             }
+            /*Button actions*/
             _playPause() {
                 console.log('play pause called')
                 this.$.audio.paused ? this.$.audio.play() : this.$.audio.pause();
                 console.log('statut')
             }
+            _repeatThisTrack() {
+                console.log('repeat this track');
+                //add repeat logic
+            }
+            _repeatPlayList() {
+                console.log('repeat track list');
+                //add repeat logic
+            }
+            _prevTrack() {
+                console.log('previous track')
+                //previous track logic
+            }
+            _stopTrack() {
+                console.log('stop track');
+                this.$.audio.pause(); 
+                this.$.audio.currentTime = 0;
+                this._audioPause();
+            }
+            _nextTrack() {
+                console.log('next track');
+                //next track logic
+            }
+
+            /*Background Actions*/
             _audioPlaying(){
                 console.log("Audio play event fired", arguments)
                 this.statusIcon = 'av:pause';
+                this.timePlayed = this.$.audio.currentTime;
             }
             _audioPause(){
                 console.log("Audio pause event fired", arguments)
