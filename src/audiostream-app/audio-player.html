@@ -13,9 +13,7 @@
                 z-index: 200;
             }
         </style>
-        <iron-timer
-            start-time="{{trackTime}}"
-            current-time="{{currentTime}}">
+        <iron-timer id="timer" start-time="{{trackTime}}" current-time="{{currentTime}}">
         </iron-timer>
         <div id="PlayerBar">
             <!-- Repeat Track -->
@@ -27,7 +25,7 @@
                 <paper-icon-button icon="av:replay" on-tap="_repeatPlayList"></paper-icon-button>
             </span>
             <!-- display slot -->
-            <span >
+            <span>
                 {{ trackName }} [[currentTime]]
             </span>
             <!-- previous track -->
@@ -48,7 +46,7 @@
             </span>
         </div>
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError" ></audio>
+        <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
         <!-- <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button> -->
     </template>
     <script>
@@ -64,19 +62,19 @@
                         type: String,
                         value: 'about:blank'
                     },
-                    statusIcon:{
+                    statusIcon: {
                         type: String,
                         value: 'av:play-arrow'
                     },
-                    trackName:{
+                    trackName: {
                         type: String,
                         value: 'MUSIIIIIIIIC'
                     },
-                    timePlayed:{
+                    timePlayed: {
                         type: Number,
                         value: 0
                     },
-                    trackTime:{
+                    trackTime: {
                         type: Number,
                         value: 0
                     }
@@ -102,7 +100,7 @@
             }
             _stopTrack() {
                 console.log('stop track');
-                this.$.audio.pause(); 
+                this.$.audio.pause();
                 this._audioPause();
             }
             _nextTrack() {
@@ -111,21 +109,25 @@
             }
 
             /*Background Actions*/
-            _audioPlaying(){
+            _audioPlaying() {
                 console.log("Audio play event fired", arguments)
                 this.statusIcon = 'av:pause';
-                this.trackTime = this.$.audio.duration;
-                this.currentTime = this.$.audio.timePlayed;
+                this.trackTime = Math.floor(this.$.audio.duration);
+                this.$.timer.currentTime = Math.floor(this.$.audio.duration);
+                Polymer.Async.microTask.run(()=>{
+                    console.log("called")
+                    this.$.timer.start();
+                });
             }
             
-            _audioPause(){
+            _audioPause() {
                 console.log("Audio pause event fired", arguments)
                 this.statusIcon = 'av:play-arrow';
             }
-            _audioEnded(){
+            _audioEnded() {
                 console.log("Audio endend event fired", arguments)
             }
-            _audioError(){
+            _audioError() {
                 console.log("Audio play event fired", arguments)
             }
         }
