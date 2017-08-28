@@ -89,3 +89,14 @@ gulp.task('build', function (cb) {
     });
 });
 
+gulp.task('serve', function (cb) {
+    
+        var command = 'polymer serve';
+    
+        exec(command, function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err);
+        });
+    });
+
