@@ -73,6 +73,10 @@
           this.error = true;
         }
       }
+      
+      detached(){
+        this.trackRef.off();
+      }
     }
 
     window.customElements.define(AudiostreamTrackList.is, AudiostreamTrackList);
