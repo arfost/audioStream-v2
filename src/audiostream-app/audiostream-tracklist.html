@@ -1,0 +1,80 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="audiostream-tracklist">
+  <template>
+    <style>
+
+    </style>
+    <div id="message">
+      <h2>TrackList</h2>
+      <div hidden$="[[_hideTrackList(error, loaded)]]">
+        <template is="dom-repeat" items="{{trackList}}">
+          <div>
+            <span>{{item.name}}</span>
+            <button on-click="_addTrack">play</button>
+          </div>
+        </template>
+      </div>
+      <div hidden$="[[!error]]">
+        error
+      </div>
+      <div hidden$="[[loaded]]">
+        loading
+      </div>
+    </div>
+  </template>
+  <script>
+    /**
+               * @customElement
+               * @polymer
+               */
+    class AudiostreamTrackList extends Polymer.Element {
+      static get is() { return 'audiostream-tracklist'; }
+      static get properties() {
+        return {
+          error: {
+            type: Boolean,
+            value: false
+          },
+          loaded: {
+            type: Boolean,
+            value: false
+          },
+          trackList: {
+            type: Array
+          },
+          trackRef: {
+            type: Object
+          },
+          audioPlayer: {
+            type: Object
+          }
+        };
+      }
+      _addTrack(e){
+        this.audioPlayer.src = e.model.item.src;
+        this.audioPlayer.trackName = e.model.item.name;
+      }
+      _hideTrackList(error, loaded){
+        console.log("aff tracklist : ", !error && loaded)
+        return !(!error && loaded)
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        try {
+          this.trackRef = firebase.database().ref('/tracks');
+          this.trackRef.once('value', (snapshot)=>{
+            console.log("retour",  snapshot.val())
+            this.trackList = snapshot.val();
+            this.loaded = true;
+          });
+        } catch (e) {
+          console.log(e);
+          this.error = true;
+        }
+      }
+    }
+
+    window.customElements.define(AudiostreamTrackList.is, AudiostreamTrackList);
+  </script>
+</dom-module>
