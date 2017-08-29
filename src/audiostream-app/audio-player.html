@@ -77,14 +77,22 @@
                     trackTime: {
                         type: Number,
                         value: 0
+                    },
+                    volume: {
+                        type: Number,
+                        value: 0.1
                     }
                 };
             }
             /*Button actions*/
             _playPause() {
                 console.log('play pause called')
-                this.$.audio.paused ? this.$.audio.play() : this.$.audio.pause();
-                console.log('statut')
+                var audio = this.$.audio;
+
+                audio.paused ? audio.play() : audio.pause();
+                console.log(audio.paused ? "playing" : "pausing")
+                audio.volume = this.volume;
+                this.$.timer.pause();
             }
             _repeatThisTrack() {
                 console.log('repeat this track');
