@@ -47,7 +47,6 @@
         </div>
         <!-- Audio HTML5 element -->
         <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
-        <!-- <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button> -->
     </template>
     <script>
         /**
@@ -80,7 +79,7 @@
                     },
                     volume: {
                         type: Number,
-                        value: 0.1
+                        value: 0.08
                     }
                 };
             }
