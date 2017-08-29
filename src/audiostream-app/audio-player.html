@@ -26,7 +26,7 @@
             </span>
             <!-- display slot -->
             <span>
-                {{ trackName }} [[currentTime]]
+                {{ trackName }} [[_timeToDisplay(currentTime)]]
             </span>
             <!-- previous track -->
             <span>
@@ -136,6 +136,11 @@
             }
             _audioError() {
                 console.log("Audio play event fired", arguments)
+            }
+            _timeToDisplay(secondes){
+                var minutes = Math.floor(secondes / 60);
+                var seconds = secondes - minutes * 60;
+                return minutes+":"+seconds
             }
         }
         window.customElements.define(AudioPlayer.is, AudioPlayer);
