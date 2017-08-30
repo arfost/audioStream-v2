@@ -47,7 +47,6 @@
         </div>
         <!-- Audio HTML5 element -->
         <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
-        <!-- <paper-icon-button icon="[[statusIcon]]" on-tap="_playPause"></paper-icon-button> -->
     </template>
     <script>
         /**
@@ -80,7 +79,7 @@
                     },
                     volume: {
                         type: Number,
-                        value: 0.1
+                        value: 0.05
                     }
                 };
             }
@@ -108,8 +107,13 @@
             }
             _stopTrack() {
                 console.log('stop track');
+                //stop and reset track
                 this.$.audio.pause();
-                this._audioPause();
+                this.$.audio.currentTime = 0;
+                
+                //stop and reset timer
+                this.$.timer.pause();
+                this.$.timer.reset();
             }
             _nextTrack() {
                 console.log('next track');
@@ -121,7 +125,9 @@
                 console.log("Audio play event fired", arguments)
                 this.statusIcon = 'av:pause';
                 this.trackTime = Math.floor(this.$.audio.duration);
-                this.$.timer.currentTime = Math.floor(this.$.audio.duration);
+                this.$.timer.currentTime = Math.floor(this.$.audio.duration - this.$.audio.currentTime);
+
+                //star timer component
                 Polymer.Async.microTask.run(()=>{
                     console.log("called")
                     this.$.timer.start();
@@ -138,10 +144,13 @@
             _audioError() {
                 console.log("Audio play event fired", arguments)
             }
-            _timeToDisplay(secondes){
-                var minutes = Math.floor(secondes / 60);
-                var seconds = secondes - minutes * 60;
-                return minutes+":"+seconds
+            _timeToDisplay(time){
+                var minutes = Math.floor(time / 60);
+                var seconds = time - minutes * 60;
+                seconds = seconds < 10 ? "0"+seconds : seconds;
+                minutes = minutes < 10 ? "0"+minutes : minutes;
+
+                return minutes+":"+seconds;
             }
         }
         window.customElements.define(AudioPlayer.is, AudioPlayer);
