@@ -4,3 +4,4 @@
 /.vscode
 functions/node_modules
 firebase-debug.log
+/script/node_modules

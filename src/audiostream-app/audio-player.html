@@ -26,7 +26,7 @@
             </span>
             <!-- display slot -->
             <span>
-                {{ trackName }} [[_timeToDisplay(currentTime)]]
+                {{track.artist}} {{track.title}} [[_timeToDisplay(currentTime)]]
             </span>
             <!-- previous track -->
             <span>
@@ -46,7 +46,7 @@
             </span>
         </div>
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
+        <audio id="audio" src="{{ track.src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
     </template>
     <script>
         /**
@@ -65,7 +65,7 @@
                         type: String,
                         value: 'av:play-arrow'
                     },
-                    trackName: {
+                    track: {
                         type: String,
                         value: 'MUSIIIIIIIIC'
                     },
@@ -151,6 +151,10 @@
                 minutes = minutes < 10 ? "0"+minutes : minutes;
 
                 return minutes+":"+seconds;
+            }
+            play(track){
+                this.track = track
+                this._playPause()
             }
         }
         window.customElements.define(AudioPlayer.is, AudioPlayer);

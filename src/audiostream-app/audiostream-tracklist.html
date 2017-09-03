@@ -11,7 +11,7 @@
 
         <template is="dom-repeat" items="{{trackList}}">
           <div>
-            <span>{{item.name}}</span>
+            <span>{{item.artist}} {{item.title}}</span>
             <button on-click="_addTrack">play</button>
           </div>
         </template>
@@ -58,9 +58,7 @@
       //we have it here by binding from audiostream-app
       //and we directly set the values and launch it
       _addTrack(e){
-        this.audioPlayer.src = e.model.item.src;
-        this.audioPlayer.trackName = e.model.item.name;
-        this.audioPlayer._playPause()
+        this.audioPlayer.play(e.model.item);
       }
 
       //to test if we have to hide the tracklist
@@ -82,7 +80,7 @@
           //arrow function to bind the context (this) of the element in the callback
           this.trackRef.on('value', (snapshot)=>{
             //callback param (snapshot) and the way to use it (snapshot.val()) is in the firebase doc
-            this.trackList = snapshot.val();
+            this.trackList = Object.values(snapshot.val());
             //we put loaded to true to show the tracklist
             this.loaded = true;
           });

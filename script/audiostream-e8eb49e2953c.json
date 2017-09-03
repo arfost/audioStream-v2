@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "audiostream-89853",
+  "private_key_id": "e8eb49e2953c68880daca1cdd487978018fdc2f0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD4Ohmntk8RD11K\nED3bsI9mgJs8Ux/eQx/hPLEdXxP1uOxICdUpGE6l41ty7+XzLI9bLmTPdwtlyGsH\nWrbMWo+gU/Fg9zJ0xWz3qx8ObMb+nsPCUv/tPIhyvm3mlL6lawEcLenD/mBNDDLZ\neNX21KJMoIlDpJ7D4+GaW+d191RpuSwuuzCP8Cy8PMew1mI9pb45OvNWn1DIgTw6\nsBeieTxXJlqeLIaXiuzhifMcbDBhYONQkSp2+As9nI1RfbfYSMNmYjJP6wLHE2+I\n0HD6n3/zYSbRtIxIgETJBKMWlulTZo6YLgNAd8dpqqEGqGK15NLysCpKT8iqaemS\nrARLua/pAgMBAAECggEAAiuX39SDOnX07dnYgJw5lL7ZHJzpcWsK01BRiB01sndM\ncZDMcVCKF382ZHnee9LO6hAsx3eV/OzUqrrLUFwWV2OEf8GJimXTfxLa8ahX0RAY\nTBGntS5LTx2FHnf8drvJxbJNEe6ebu4FX8tjq4XOaXcZ3CKLVNEgPtZA3tIrxcTZ\nSoY07WHuiSpAkBaQneuJJyLerMpaXSzbFWM4f2W/IV8ArenpUfIX7mGYHsWk+u7P\nJCk1L1IBcmcG1/uuzbknckMia9lPQ9ij0CMPaAr8guj/nIUg0TreDkLVf2lCGgQk\n8I3a9W8KKR81TSEJ109SqZ6nA48jATz8eTpVSN2hNQKBgQD+hajlyQX15Ci10FC9\nmb6MswCB4Uyb4+KWTZq3smE3+dNz/rBySPs16X4+Pr7M1jkrxvGQLIJFocBNbrkT\n/Pa1hDJ5KgDwRK+kngvPDiHBkimt97L63IyswzPiCzGZ21cQ6b1rio1pQrjKV1mH\nl9yQblTLKiKEeTgSIK86HJw4YwKBgQD5qxU3v9Rb4gCIkPCNo2NdAflMhy5y+06P\nepL4Ar/EbHRi3OANOO58OtOi1NjWGxwRWhwY8CCK5kJzQpa3x651y5afPikEJJw8\n8Ya8PLwLRUoA4pxybzhE3afCRnqGvvy/C3W5iT0zovt6f8xpe1WQR+btjR8qHKWv\nI+OKp1W6QwKBgQC6LIao3mxPur7UjzYgGg+5102ts2FYPk8F5mofqIlYapNzq37h\neeTXQJ4pZbgnGSPkk7cq4IPB71k8yprytfy4NaS94C2jknpwDXNR12J1tzZpnF/9\nA8qarIaM9+cmRbzgEDmQKl7Z+gY1a8N/XWPm+e1oVr+86vZKvEGwXjEfRQKBgCFz\nr9MZa82n2WRy7xg7NRwIIKwFTM7xJxSIWtrKG4Go+msopwh+gU254BNoK2l8lmUo\nyqz4t5OEyJCC8ojLQ2/bCGJrxLkeYqSzw9bC2Hs2HHVD56xZhJONk2WvZclaG6lJ\nUsu6PK4Hf2RpbS0Q7mT3jVR03SEaV4TA7ULtqsnbAoGAGEWVTFEFfWJ1LMpM+LWq\n8811EFTJsTx5jQfWuTuPNtkyNhq0hZiVwHEDYM//Za/3cxiaETu4MKa2n/U6HWHJ\nziw55f0r7reghQ75UGKZLfJYgb/vyA6oklOEaugFlNY7eaolKXaHGytozg7LqBre\nc+itzoPUAAZUZHGpWIBWfZw=\n-----END PRIVATE KEY-----\n",
+  "client_email": "audiostream-89853@appspot.gserviceaccount.com",
+  "client_id": "104775638455505080886",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/audiostream-89853%40appspot.gserviceaccount.com"
+}
