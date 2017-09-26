@@ -11,8 +11,8 @@
 
         <template is="dom-repeat" items="{{trackList}}">
           <div>
-            <span>{{item.artist}} {{item.title}}</span>
-            <button on-click="_addTrack">play</button>
+            <span>{{item.artiste}} - {{item.title}}</span>
+            <button on-click="_launchTrack">play</button>
           </div>
         </template>
 
@@ -42,6 +42,10 @@
             type: Boolean,
             value: false
           },
+          currentTrack: {
+            type: Number,
+            value: 0
+          },
           trackList: {
             type: Array
           },
@@ -54,17 +58,38 @@
         };
       }
 
-      //clever function to set the new track on the audio player
-      //we have it here by binding from audiostream-app
-      //and we directly set the values and launch it
-      _addTrack(e){
-        this.audioPlayer.play(e.model.item);
+      _launchTrack(e) {
+        console.log(e)
+        this._pushTrackToAudioPlayer(e.model.item);
+        this.currentTrack = e.model.index;
+      }
+
+      _pushTrackToAudioPlayer(track) {
+        this.audioPlayer.play(track);
+      }
+
+      _nextTrack() {
+        console.log("I'm getting it, nice isn't it ?")
+        this.currentTrack++;
+        this.audioPlayer.play(this.trackList[this.currentTrack])
+      }
+
+      _previousTrack() {
+        console.log("I'm getting it, nice isn't it ?")
+        this.currentTrack--;
+        this.audioPlayer.play(this.trackList[this.currentTrack])
       }
 
       //to test if we have to hide the tracklist
-      _hideTrackList(error, loaded){
+      _hideTrackList(error, loaded) {
         console.log("aff tracklist : ", !error && loaded)
         return !(!error && loaded)
+      }
+
+      constructor() {
+        super();
+        this._boundNextTrack = this._nextTrack.bind(this);
+        this._boundPreviousTrack = this._previousTrack.bind(this);
       }
 
 
@@ -78,12 +103,15 @@
 
           //attach listener to the ref, called each time event "value" is send from firebase
           //arrow function to bind the context (this) of the element in the callback
-          this.trackRef.on('value', (snapshot)=>{
+          this.trackRef.on('value', (snapshot) => {
             //callback param (snapshot) and the way to use it (snapshot.val()) is in the firebase doc
             this.trackList = Object.values(snapshot.val());
             //we put loaded to true to show the tracklist
             this.loaded = true;
           });
+          console.log(this.audioPlayer)
+          this.audioPlayer.addEventListener('next', this._boundNextTrack)
+          this.audioPlayer.addEventListener('previous', this._boundPreviousTrack)
         } catch (e) {
           console.log(e);
           this.error = true;
@@ -92,10 +120,12 @@
 
       //lifecycle method called when element is detached from dom
       //can be called multiple times
-      detached(){
-        super.detached();
+      disconnectedCallback() {
+        super.disconnectedCallback();
         //detach all listeners on this ref
         this.trackRef.off();
+        this.audioPlayer.removeEventListener('next', this._boundNextTrack)
+        this.audioPlayer.removeEventListener('previous', this._boundPreviousTrack)
       }
     }
 

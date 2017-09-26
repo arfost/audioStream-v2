@@ -22,59 +22,8 @@
         padding: 0;
       }
 
-      #message {
-        background: white;
-        max-width: 360px;
-        margin: 100px auto 16px;
-        padding: 32px 24px;
-        border-radius: 3px;
-      }
-
-      #message h2 {
-        color: #ffa100;
-        font-weight: bold;
-        font-size: 16px;
-        margin: 0 0 8px;
-      }
-
-      #message h1 {
-        font-size: 22px;
-        font-weight: 300;
-        color: rgba(0, 0, 0, 0.6);
-        margin: 0 0 16px;
-      }
-
-      #message p {
-        line-height: 140%;
-        margin: 16px 0 24px;
-        font-size: 14px;
-      }
-
-      #message a {
-        display: block;
-        text-align: center;
-        background: #039be5;
-        text-transform: uppercase;
-        text-decoration: none;
-        color: white;
-        padding: 16px;
-        border-radius: 4px;
-      }
-
-      #message,
-      #message a {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-      }
-
-      #load {
-        color: rgba(0, 0, 0, 0.4);
-        text-align: center;
-        font-size: 13px;
-      }
-
       @media (max-width: 600px) {
-         :host,
-        #message {
+         :host {
           margin-top: 0;
           background: white;
           box-shadow: none;
@@ -87,8 +36,7 @@
     <div id="message">
       <h2>Welcome</h2>
       <audiostream-tracklist audio-player="[[$.audio]]"></audiostream-tracklist>
-      <audio-player src="https://firebasestorage.googleapis.com/v0/b/audiostream-89853.appspot.com/o/The%20Subways%20-%20Rock%60N%60Roll%20Queen%20(%20hd%20)%20rocknrolla%20soundtrack.mp3?alt=media&token=41df31eb-aac6-46e2-906d-db5446bc5a32" id="audio"></audio-player>
-      
+      <audio-player id="audio"></audio-player>
   </template>
   <script>
     /**

@@ -8,17 +8,20 @@
 <dom-module id="audio-player">
     <template>
         <style>
-            paper-icon-button {
+            span {
                 color: black;
                 z-index: 200;
+            }
+            span[active] {
+                color: red !important;
             }
         </style>
         <iron-timer id="timer" start-time="{{trackTime}}" current-time="{{currentTime}}">
         </iron-timer>
         <div id="PlayerBar">
             <!-- Repeat Track -->
-            <span>
-                <paper-icon-button icon="av:repeat-one" on-tap="_repeatThisTrack"></paper-icon-button>
+            <span active$=[[loopOne]]>
+                <paper-icon-button icon="av:repeat-one" on-tap="_repeatThisTrack" active></paper-icon-button>
             </span>
             <!-- Repeat List -->
             <span>
@@ -26,7 +29,10 @@
             </span>
             <!-- display slot -->
             <span>
-                {{track.artist}} {{track.title}} [[_timeToDisplay(currentTime)]]
+                {{track.artiste}} {{track.title}}
+            </span>
+            <span>
+                [[_timeToDisplay(currentTime)]]
             </span>
             <!-- previous track -->
             <span>
@@ -46,7 +52,7 @@
             </span>
         </div>
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ track.src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"></audio>
+        <audio id="audio" src="{{ track.src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError" loop$=[[loopOne]]></audio>
     </template>
     <script>
         /**
@@ -66,8 +72,8 @@
                         value: 'av:play-arrow'
                     },
                     track: {
-                        type: String,
-                        value: 'MUSIIIIIIIIC'
+                        type: Object,
+                        value: {}
                     },
                     timePlayed: {
                         type: Number,
@@ -79,7 +85,11 @@
                     },
                     volume: {
                         type: Number,
-                        value: 0.05
+                        value: 0.1
+                    },
+                    loopOne: {
+                        type:Boolean,
+                        value:false
                     }
                 };
             }
@@ -94,8 +104,9 @@
                 this.$.timer.pause();
             }
             _repeatThisTrack() {
-                console.log('repeat this track');
-                //add repeat logic
+                this.loopOne = !this.loopOne;
+                console.log('repeat this track', this.loopOne);
+                
             }
             _repeatPlayList() {
                 console.log('repeat track list');
@@ -129,7 +140,6 @@
 
                 //star timer component
                 Polymer.Async.microTask.run(()=>{
-                    console.log("called")
                     this.$.timer.start();
                 });
             }
@@ -140,11 +150,13 @@
             }
             _audioEnded() {
                 console.log("Audio endend event fired", arguments)
+                this._nextTrack();
             }
             _audioError() {
-                console.log("Audio play event fired", arguments)
+                console.log("Audio error event fired", arguments)
             }
             _timeToDisplay(time){
+                console.log(time)
                 var minutes = Math.floor(time / 60);
                 var seconds = time - minutes * 60;
                 seconds = seconds < 10 ? "0"+seconds : seconds;
@@ -155,6 +167,14 @@
             play(track){
                 this.track = track
                 this._playPause()
+            }
+
+            _nextTrack(){
+                this.dispatchEvent(new CustomEvent('next'));
+            }
+
+            _prevTrack(){
+                this.dispatchEvent(new CustomEvent('previous'));
             }
         }
         window.customElements.define(AudioPlayer.is, AudioPlayer);
