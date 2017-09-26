@@ -24,7 +24,7 @@
                 <paper-icon-button icon="av:repeat-one" on-tap="_repeatThisTrack" active></paper-icon-button>
             </span>
             <!-- Repeat List -->
-            <span>
+            <span active$=[[loopAll]]>
                 <paper-icon-button icon="av:replay" on-tap="_repeatPlayList"></paper-icon-button>
             </span>
             <!-- display slot -->
@@ -90,6 +90,10 @@
                     loopOne: {
                         type:Boolean,
                         value:false
+                    },
+                    loopAll: {
+                        type:Boolean,
+                        value:false
                     }
                 };
             }
@@ -109,8 +113,8 @@
                 
             }
             _repeatPlayList() {
-                console.log('repeat track list');
-                //add repeat logic
+                this.loopAll = !this.loopAll;
+                this.dispatchEvent(new CustomEvent('repeat', {detail:this.loopAll}));
             }
             _prevTrack() {
                 console.log('previous track')
@@ -126,11 +130,6 @@
                 this.$.timer.pause();
                 this.$.timer.reset();
             }
-            _nextTrack() {
-                console.log('next track');
-                //next track logic
-            }
-
             /*Background Actions*/
             _audioPlaying() {
                 console.log("Audio play event fired", arguments)

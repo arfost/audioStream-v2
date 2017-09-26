@@ -54,6 +54,10 @@
           },
           audioPlayer: {
             type: Object
+          },
+          repeat: {
+            type:Boolean,
+            value:false
           }
         };
       }
@@ -69,14 +73,22 @@
       }
 
       _nextTrack() {
-        console.log("I'm getting it, nice isn't it ?")
         this.currentTrack++;
+        if(this.currentTrack >= this.trackList.length){
+          if(this.repeat){
+            this.currentTrack = 0;
+          }else{
+            return;
+          }
+        }
         this.audioPlayer.play(this.trackList[this.currentTrack])
       }
 
       _previousTrack() {
-        console.log("I'm getting it, nice isn't it ?")
         this.currentTrack--;
+        if(this.currentTrack < 0){
+          return;
+        }
         this.audioPlayer.play(this.trackList[this.currentTrack])
       }
 
@@ -112,6 +124,9 @@
           console.log(this.audioPlayer)
           this.audioPlayer.addEventListener('next', this._boundNextTrack)
           this.audioPlayer.addEventListener('previous', this._boundPreviousTrack)
+          this.audioPlayer.addEventListener('repeat', e => {
+            this.repeat = e.detail;
+          })
         } catch (e) {
           console.log(e);
           this.error = true;
