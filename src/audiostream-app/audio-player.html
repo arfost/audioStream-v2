@@ -182,13 +182,29 @@
             play(track) {
                 this.track = track
                 this._playPause()
+                if ('mediaSession' in navigator) {
+
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: track.title,
+                        artist: track.artiste
+                    });
+
+                    navigator.mediaSession.setActionHandler('play', ()=>{this._playPause()});
+                    navigator.mediaSession.setActionHandler('pause', ()=>{this._playPause()});
+                    navigator.mediaSession.setActionHandler('previoustrack', ()=>{this._prevTrack()});
+                    navigator.mediaSession.setActionHandler('nexttrack', ()=>{this._nextTrack()});
+                }else{
+                    console.log("no media session")
+                }
             }
 
             _nextTrack() {
+                //alert("next")
                 this.dispatchEvent(new CustomEvent('next'));
             }
 
             _prevTrack() {
+                //alert("prev")
                 this.dispatchEvent(new CustomEvent('previous'));
             }
             _volumeDown() {
