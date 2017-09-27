@@ -30,10 +30,10 @@
                     <paper-icon-button icon="av:replay" on-tap="_repeatPlayList"></paper-icon-button>
             </span>
             <span>
-                <paper-icon-button icon="av:volume-down" on-tap="_volumeDown"></paper-icon-button>
+                <paper-slider value="{{volume}}" pin></paper-slider>
             </span>
             <span>
-                <paper-slider value="{{volume}}" pin></paper-slider>
+                <paper-icon-button icon="av:volume-down" on-tap="_volumeDown"></paper-icon-button>
             </span>
             <span>
                 <paper-icon-button icon="av:volume-up" on-tap="_volumeUp"></paper-icon-button>
