@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/iron-timer/iron-timer.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 
 
 <dom-module id="audio-player">
@@ -12,6 +13,7 @@
                 color: black;
                 z-index: 200;
             }
+
             span[active] {
                 color: red !important;
             }
@@ -25,7 +27,16 @@
             </span>
             <!-- Repeat List -->
             <span active$=[[loopAll]]>
-                <paper-icon-button icon="av:replay" on-tap="_repeatPlayList"></paper-icon-button>
+                    <paper-icon-button icon="av:replay" on-tap="_repeatPlayList"></paper-icon-button>
+            </span>
+            <span>
+                <paper-icon-button icon="av:volume-down" on-tap="_volumeDown"></paper-icon-button>
+            </span>
+            <span>
+                <paper-slider value="{{volume}}" pin></paper-slider>
+            </span>
+            <span>
+                <paper-icon-button icon="av:volume-up" on-tap="_volumeUp"></paper-icon-button>
             </span>
             <!-- display slot -->
             <span>
@@ -52,7 +63,8 @@
             </span>
         </div>
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ track.src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError" loop$=[[loopOne]]></audio>
+        <audio id="audio" src="{{ track.src }}" on-playing="_audioPlaying" on-pause="_audioPause" on-ended="_audioEnded" on-error="_audioError"
+            loop$=[[loopOne]]></audio>
     </template>
     <script>
         /**
@@ -85,15 +97,16 @@
                     },
                     volume: {
                         type: Number,
-                        value: 0.1
+                        value: 50,
+                        observer: '_setVolume'
                     },
                     loopOne: {
-                        type:Boolean,
-                        value:false
+                        type: Boolean,
+                        value: false
                     },
                     loopAll: {
-                        type:Boolean,
-                        value:false
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -104,17 +117,20 @@
 
                 audio.paused ? audio.play() : audio.pause();
                 console.log(audio.paused ? "playing" : "pausing")
-                audio.volume = this.volume;
+                this._setVolume()
                 this.$.timer.pause();
+            }
+            _setVolume() {
+                this.$.audio.volume = (this.volume / 100)
             }
             _repeatThisTrack() {
                 this.loopOne = !this.loopOne;
                 console.log('repeat this track', this.loopOne);
-                
+
             }
             _repeatPlayList() {
                 this.loopAll = !this.loopAll;
-                this.dispatchEvent(new CustomEvent('repeat', {detail:this.loopAll}));
+                this.dispatchEvent(new CustomEvent('repeat', { detail: this.loopAll }));
             }
             _prevTrack() {
                 console.log('previous track')
@@ -125,7 +141,7 @@
                 //stop and reset track
                 this.$.audio.pause();
                 this.$.audio.currentTime = 0;
-                
+
                 //stop and reset timer
                 this.$.timer.pause();
                 this.$.timer.reset();
@@ -138,11 +154,11 @@
                 this.$.timer.currentTime = Math.floor(this.$.audio.duration - this.$.audio.currentTime);
 
                 //star timer component
-                Polymer.Async.microTask.run(()=>{
+                Polymer.Async.microTask.run(() => {
                     this.$.timer.start();
                 });
             }
-            
+
             _audioPause() {
                 console.log("Audio pause event fired", arguments)
                 this.statusIcon = 'av:play-arrow';
@@ -152,28 +168,40 @@
                 this._nextTrack();
             }
             _audioError() {
-                console.log("Audio error event fired", arguments)
+                console.log("Audio error event fired io io io ", arguments)
             }
-            _timeToDisplay(time){
+            _timeToDisplay(time) {
                 console.log(time)
                 var minutes = Math.floor(time / 60);
                 var seconds = time - minutes * 60;
-                seconds = seconds < 10 ? "0"+seconds : seconds;
-                minutes = minutes < 10 ? "0"+minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
 
-                return minutes+":"+seconds;
+                return minutes + ":" + seconds;
             }
-            play(track){
+            play(track) {
                 this.track = track
                 this._playPause()
             }
 
-            _nextTrack(){
+            _nextTrack() {
                 this.dispatchEvent(new CustomEvent('next'));
             }
 
-            _prevTrack(){
+            _prevTrack() {
                 this.dispatchEvent(new CustomEvent('previous'));
+            }
+            _volumeDown() {
+                if (this.volume > 0) {
+                    this.volume = this.volume - 5;
+                    console.log("volume : ", this.volume)
+                }
+            }
+            _volumeUp() {
+                if (this.volume < 100) {
+                    this.volume = this.volume + 5;
+                    console.log("volume : ", this.volume)
+                }
             }
         }
         window.customElements.define(AudioPlayer.is, AudioPlayer);
