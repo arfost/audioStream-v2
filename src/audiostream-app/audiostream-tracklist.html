@@ -1,18 +1,31 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 
 <dom-module id="audiostream-tracklist">
   <template>
     <style>
-
+      .tohide[hidden] {
+        display: none !important;
+      }
     </style>
+    <iron-ajax auto url="https://audiostream-89853.firebaseio.com/tracks.json" handle-as="json" on-response="handleResponse"
+      debounce-duration="300"></iron-ajax>
     <div>
-      <h2>TrackList</h2>
+      <h2>TrackList </h2>
+      <paper-icon-button icon="icons:get-app" on-tap="_cacheAll"></paper-icon-button>
+      <paper-icon-button icon="icons:delete" on-tap="_uncacheAll"></paper-icon-button>
       <div hidden$="[[_hideTrackList(error, loaded)]]">
 
-        <template is="dom-repeat" items="{{trackList}}">
+        <template is="dom-repeat" items="{{trackList}}" mutable-data>
           <div>
             <span>{{item.artiste}} - {{item.title}}</span>
-            <button on-click="_launchTrack">play</button>
+            <paper-icon-button icon="av:play-arrow" on-tap="_launchTrack"></paper-icon-button>
+            <paper-icon-button icon="icons:get-app" class="tohide" on-tap="_cacheButtonEvent" hidden$=[[item.cached]]></paper-icon-button>
+            <paper-icon-button icon="icons:delete" class="tohide" on-tap="_uncacheButtonEvent" hidden$=[[!item.cached]]></paper-icon-button>
           </div>
         </template>
 
@@ -56,28 +69,48 @@
             type: Object
           },
           repeat: {
-            type:Boolean,
-            value:false
+            type: Boolean,
+            value: false
+          },
+          cached: {
+            type: Boolean,
+            value: false
           }
         };
       }
 
       _launchTrack(e) {
-        console.log(e)
         this._pushTrackToAudioPlayer(e.model.item);
         this.currentTrack = e.model.index;
       }
 
+      _cacheButtonEvent(e) {
+        this._cacheFile(e.model.item).then(() => {
+          e.model.item.cached = true;
+          var tmp = this.trackList;
+          this.trackList = []
+          this.trackList = tmp;
+        })
+      }
+
+      _uncacheButtonEvent(e) {
+        this._uncacheFile(e.model.item).then(() => {
+          e.model.item.cached = false;
+          var tmp = this.trackList;
+          this.trackList = []
+          this.trackList = tmp;
+        });
+      }
       _pushTrackToAudioPlayer(track) {
         this.audioPlayer.play(track);
       }
 
       _nextTrack() {
         this.currentTrack++;
-        if(this.currentTrack >= this.trackList.length){
-          if(this.repeat){
+        if (this.currentTrack >= this.trackList.length) {
+          if (this.repeat) {
             this.currentTrack = 0;
-          }else{
+          } else {
             return;
           }
         }
@@ -86,7 +119,7 @@
 
       _previousTrack() {
         this.currentTrack--;
-        if(this.currentTrack < 0){
+        if (this.currentTrack < 0) {
           return;
         }
         this.audioPlayer.play(this.trackList[this.currentTrack])
@@ -94,7 +127,6 @@
 
       //to test if we have to hide the tracklist
       _hideTrackList(error, loaded) {
-        console.log("aff tracklist : ", !error && loaded)
         return !(!error && loaded)
       }
 
@@ -111,17 +143,20 @@
         super.connectedCallback();
         try {
           //get a firebase ref from a path
-          this.trackRef = firebase.database().ref('/tracks');
+          //this.trackRef = firebase.database().ref('/tracks');
 
           //attach listener to the ref, called each time event "value" is send from firebase
           //arrow function to bind the context (this) of the element in the callback
+          /*
           this.trackRef.on('value', (snapshot) => {
             //callback param (snapshot) and the way to use it (snapshot.val()) is in the firebase doc
             this.trackList = Object.values(snapshot.val());
             //we put loaded to true to show the tracklist
             this.loaded = true;
           });
-          console.log(this.audioPlayer)
+          */
+
+
           this.audioPlayer.addEventListener('next', this._boundNextTrack)
           this.audioPlayer.addEventListener('previous', this._boundPreviousTrack)
           this.audioPlayer.addEventListener('repeat', e => {
@@ -138,9 +173,128 @@
       disconnectedCallback() {
         super.disconnectedCallback();
         //detach all listeners on this ref
-        this.trackRef.off();
+        //this.trackRef.off();
         this.audioPlayer.removeEventListener('next', this._boundNextTrack)
         this.audioPlayer.removeEventListener('previous', this._boundPreviousTrack)
+      }
+
+      handleResponse(e, request) {
+        console.log(request.response)
+
+        this.trackList = Object.values(request.response);
+
+        this.trackList.map((track, index) => {
+          caches.open('cache-mp3').then(cache => {
+            cache.match(new Request(track.src)).then((response) => {
+              if (response) {
+                console.log('Found response in cache for : ', track.title);
+                track.cached = true;
+                var tmp = this.trackList;
+                this.trackList = []
+                this.trackList = tmp;
+              } else {
+                console.log('no response in cache for : ', track.title);
+                track.cached = false;
+                var tmp = this.trackList;
+                this.trackList = []
+                this.trackList = tmp;
+
+              }
+            }).catch((error) => {
+
+              // Handles exceptions that arise from match() or fetch().
+              console.error('Error in cache verif:', error);
+
+              throw error;
+            });
+          })
+        })
+        this.loaded = true;
+      }
+
+      getCacheSize() {
+        caches.keys().then(function (cacheNames) {
+          return Promise.all(
+            cacheNames.map(function (cacheName) {
+              console.log('cache : ', cacheName);
+            })
+          );
+        })
+        caches.open('cache-mp3')
+          .then(cache => cache.matchAll())
+          .then(responses => {
+            let cacheSize = 0;
+            let blobQueue = Promise.resolve();
+
+            responses.forEach(response => {
+              let responseSize = response.headers.get('content-length');
+              if (responseSize) {
+                // Use content-length HTTP header when possible.
+                cacheSize += Number(responseSize);
+              } else {
+                // Otherwise, use the uncompressed blob size.
+                blobQueue = blobQueue.then(_ => response.blob())
+                  .then(blob => { cacheSize += blob.size; if (blob.close) blob.close(); });
+              }
+            });
+
+            return blobQueue.then(_ => {
+              console.log('Artwork cache is about ' + cacheSize + ' Bytes.');
+            });
+          })
+          .catch(error => { console.log(error); });
+      }
+
+      _cacheFile(track) {
+
+        var request = new Request(track.src)
+        return fetch(request, { mode: 'no-cors' }).then(response => {
+          console.log("Requete pour ", track.title, " finished")
+          caches.open('cache-mp3').then(cache => {
+            console.log("cache ouvert pour ", track.title)
+            cache.put(request, response).then(() => {
+              console.log(track.title, " ajoutée au cache");
+            });
+          });
+        });
+      }
+
+      _uncacheFile(track) {
+        return caches.open('cache-mp3')
+          .then(cache => cache.delete(track.src))
+          .catch(error => { console.log(error); });
+      }
+
+      _cacheAll() {
+        var toCache = [];
+        for (var track of this.trackList) {
+          if (!track.cached) {
+            toCache.push(this._cacheFile(track))
+            track.cached = true;
+          }
+        }
+        Promise.all(toCache).then(() => {
+          console.log("alls files cached")
+          var tmp = this.trackList;
+          this.trackList = []
+          this.trackList = tmp;
+        })
+      }
+
+      _uncacheAll() {
+        var toUncache = [];
+        for (var track of this.trackList) {
+          if (track.cached) {
+            toUncache.push(this._uncacheFile(track))
+            track.cached = false;
+          }
+        }
+        Promise.all(toUncache).then(() => {
+          console.log("alls files uncached")
+          var tmp = this.trackList;
+          this.trackList = []
+          this.trackList = tmp;
+        })
       }
     }
 

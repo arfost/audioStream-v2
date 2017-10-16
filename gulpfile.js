@@ -78,7 +78,7 @@ gulp.task('deploy', ['build'], function (cb) {
     });
 });
 
-gulp.task('build', function (cb) {
+gulp.task('pol-build', function (cb) {
 
     var command = 'polymer build';
 
@@ -89,14 +89,25 @@ gulp.task('build', function (cb) {
     });
 });
 
-gulp.task('serve', function (cb) {
-    
-        var command = 'polymer serve';
-    
-        exec(command, function (err, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
-            cb(err);
-        });
+gulp.task('build', ['pol-build'], function (cb) {
+
+    var command = 'workbox generate:sw';
+
+    exec(command, function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
     });
+});
+
+gulp.task('serve', ['build'], function (cb) {
+
+    var command = 'polymer serve build/default';
+
+    exec(command, function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
+});
 

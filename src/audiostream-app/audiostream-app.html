@@ -2,6 +2,7 @@
 <link rel="import" href="audio-player.html">
 <link rel="import" href="audiostream-tracklist.html">
 
+<!--
 <script src="../static-scripts/fbapp.js"></script>
 <script src="../static-scripts/fbauth.js"></script>
 <script src="../static-scripts/fbdatabase.js"></script>
@@ -9,11 +10,11 @@
 <script src="../static-scripts/fbstorage.js"></script>
 
 <script src="../static-scripts/fbinit.js"></script>
-
+-->
 <dom-module id="audiostream-app">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
         background: lightgray;
         color: rgba(0, 0, 0, 0.87);
@@ -23,12 +24,12 @@
       }
 
       @media (max-width: 600px) {
-         :host {
+        :host {
           margin-top: 0;
           background: lightgray;
           box-shadow: none;
         }
-         :host {
+        :host {
           border-top: 16px solid #ffa100;
         }
       }
@@ -58,7 +59,14 @@
         super();
       }
 
-      
+      connectedCallback() {
+        super.connectedCallback();
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW registered!', reg))
+          .catch(err => console.log('Boo!', err, arguments));
+      }
+
+
     }
 
     window.customElements.define(AudiostreamApp.is, AudiostreamApp);
