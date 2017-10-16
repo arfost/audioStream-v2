@@ -112,11 +112,9 @@
             }
             /*Button actions*/
             _playPause() {
-                console.log('play pause called')
                 var audio = this.$.audio;
 
                 audio.paused ? audio.play() : audio.pause();
-                console.log(audio.paused ? "playing" : "pausing")
                 this._setVolume()
                 this.$.timer.pause();
             }
@@ -125,8 +123,6 @@
             }
             _repeatThisTrack() {
                 this.loopOne = !this.loopOne;
-                console.log('repeat this track', this.loopOne);
-
             }
             _repeatPlayList() {
                 this.loopAll = !this.loopAll;
@@ -148,7 +144,6 @@
             }
             /*Background Actions*/
             _audioPlaying() {
-                console.log("Audio play event fired", arguments)
                 this.statusIcon = 'av:pause';
                 this.trackTime = Math.floor(this.$.audio.duration);
                 this.$.timer.currentTime = Math.floor(this.$.audio.duration - this.$.audio.currentTime);
@@ -160,19 +155,15 @@
             }
 
             _audioPause() {
-                console.log("Audio pause event fired", arguments)
                 this.statusIcon = 'av:play-arrow';
             }
             _audioEnded() {
-                console.log("Audio endend event fired", arguments)
                 this._nextTrack();
             }
             _audioError() {
-                this._nextTrack()
-                console.log("Audio error event fired io io io ", arguments)
+                //this._nextTrack()
             }
             _timeToDisplay(time) {
-                console.log(time)
                 var minutes = Math.floor(time / 60);
                 var seconds = time - minutes * 60;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -194,8 +185,6 @@
                     navigator.mediaSession.setActionHandler('pause', ()=>{this._playPause()});
                     navigator.mediaSession.setActionHandler('previoustrack', ()=>{this._prevTrack()});
                     navigator.mediaSession.setActionHandler('nexttrack', ()=>{this._nextTrack()});
-                }else{
-                    console.log("no media session")
                 }
             }
 
