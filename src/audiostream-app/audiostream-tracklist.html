@@ -86,6 +86,7 @@
 
       _cacheButtonEvent(e) {
         this._cacheFile(e.model.item).then(() => {
+          console.log(e.model.item.title, " ready to play")
           e.model.item.cached = true;
           var tmp = this.trackList;
           this.trackList = []
@@ -249,13 +250,15 @@
 
         var request = new Request(track.src)
         return fetch(request, { mode: 'no-cors' }).then(response => {
-          console.log("Requete pour ", track.title, " finished")
-          caches.open('cache-mp3').then(cache => {
-            console.log("cache ouvert pour ", track.title)
-            cache.put(request, response).then(() => {
-              console.log(track.title, " ajoutée au cache");
+          console.log("Requete pour ", track.title, " atterie", Date.now())
+          return response.blob().then(blob => {
+            console.log("Requete pour ", track.title, " finie", Date.now(), blob)
+            return caches.open('cache-mp3').then(cache => {
+              console.log("cache ouvert pour ", track.title)
+              return cache.put(request, response)
             });
-          });
+          })
+          
         });
       }
 
